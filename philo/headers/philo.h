@@ -5,7 +5,16 @@
 # include <sys/time.h>
 # include <stdio.h>
 
-unsigned int	ft_atoui(const char *str);
+unsigned int	ft_atoui(const char *str, int *err);
+
+enum e_input_meaning
+{
+	number_of_philosophers						= 1,
+	time_to_die									= 2,
+	time_to_eat									= 3,
+	time_to_sleep								= 4,
+	number_of_times_each_philosopher_must_eat	= 5,
+};
 
 typedef struct s_info
 {
@@ -13,7 +22,7 @@ typedef struct s_info
 	unsigned int	tt_die;
 	unsigned int	tt_eat;
 	unsigned int	tt_sleep;
-	int				must_eat;
+	int				min_eat;
 }					t_info;
 
 typedef struct s_philo
