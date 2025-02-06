@@ -1,6 +1,29 @@
 
 #include "../headers/philo.h"
-#include "limits.h"
+
+int	get_time(void);
+
+int	ft_printf_action(int action, t_philo *ph, size_t cur_t)
+{
+	if (action == FORK)
+		printf(YEL"%zu %d has taken a fork\n"RESET, get_time() - cur_t, ph->id);
+	if (action == EAT)
+		printf(RED"%zu %d is eating\n"RESET, get_time() - cur_t, ph->id);
+	if (action == SLEEP)
+		printf(BLUE"%zu %d is sleeping\n"RESET, get_time() - cur_t, ph->id);
+	if (action == THINK)
+		printf(GREEN"%zu %d is thinking\n"RESET, get_time() - cur_t, ph->id);
+}
+
+int	get_time(void)
+{
+	struct timeval	tv;
+	size_t			time;
+
+	gettimeofday(&tv, NULL);
+	time = (size_t)tv.tv_sec * 1000 + (size_t)tv.tv_usec / 1000;
+	return (time);
+}
 
 //atoi to unsigned int with some errorchecking
 //only returns result if success and sets err to EXIT_SUCCESS, else returns 0
