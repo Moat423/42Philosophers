@@ -6,7 +6,7 @@
 #    By: lmeubrin <lmeubrin@student.42berlin.       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/22 15:55:27 by lmeubrin          #+#    #+#              #
-#    Updated: 2025/02/05 14:41:31 by lmeubrin         ###   ########.fr        #
+#    Updated: 2025/02/07 16:41:10 by lmeubrin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -41,7 +41,10 @@ LEAK_FLAGS := -fsanitize=leak
 
 SRCS := $(addprefix $(SRC_DIR)/, \
 	main.c \
-	ft_strtoui.c \
+	init_destroy.c \
+	utils.c \
+	philos.c \
+	routines.c \
 	)
 
 OBJS := $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)

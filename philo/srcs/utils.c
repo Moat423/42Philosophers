@@ -3,16 +3,37 @@
 
 int	get_time(void);
 
-int	ft_printf_action(int action, t_philo *ph, size_t cur_t)
+void	ft_bzero(void *s, size_t size)
 {
+	char	*str;
+	size_t	i;
+
+	str = (char *)s;
+	i = 0;
+	while (i++ < size)
+		str[i] = 0;
+}
+
+int	ft_printf_action(int action, t_philo *p)
+{
+	int		ret;
+	size_t	time;
+
+	ret = 0;
+	time = get_time() - p->start_time;
+	// pthread_mutex_lock(p->print_mutex);
 	if (action == FORK)
-		printf(YEL"%zu %d has taken a fork\n"RESET, get_time() - cur_t, ph->id);
-	if (action == EAT)
-		printf(RED"%zu %d is eating\n"RESET, get_time() - cur_t, ph->id);
-	if (action == SLEEP)
-		printf(BLUE"%zu %d is sleeping\n"RESET, get_time() - cur_t, ph->id);
-	if (action == THINK)
-		printf(GREEN"%zu %d is thinking\n"RESET, get_time() - cur_t, ph->id);
+		ret = printf(YEL"%zu %d has taken a fork\n"RESET, time, p->id);
+	else if (action == EAT)
+		ret = printf(MAG"%zu %d is eating\n"RESET, time, p->id);
+	else if (action == SLEEP)
+		ret = printf(BLUE"%zu %d is sleeping\n"RESET, time, p->id);
+	else if (action == THINK)
+		ret = printf(GREEN"%zu %d is thinking\n"RESET, time, p->id);
+	else if (action == DIE)
+		ret = printf(BRED"%zu %d died\n"RESET, time, p->id);
+	// pthread_mutex_unlock(p->print_mutex);
+	return (ret);
 }
 
 int	get_time(void)

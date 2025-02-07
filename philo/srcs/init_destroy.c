@@ -32,40 +32,49 @@ int	init_locks(t_info *info)
 
 int	init_arrays(t_info *info)
 {
-	int	i;
+	unsigned int	i;
 
 	info->forks = malloc(sizeof(pthread_mutex_t) * info->nb);
 	info->philos = malloc(sizeof(t_philo) * info->nb);
 	if (!info->forks || !info->philos)
 		return (destroy_infos(info));
-	i = -1;
-	while (++i < info->nb)
+	i = 0;
+	while (i < info->nb)
 	{
 		if (pthread_mutex_init(&(info->forks[i]), NULL))
 			return (destroy_infos(info));
+		ft_bzero((void *)&(info->philos[i]), sizeof(t_philo));
+		if (pthread_mutex_init(&(info->philos[i].time_mutex), NULL))
+			return (destroy_infos(info));
 		info->philos[i].id = i + 1;
-		info->philos[i].last_meal = get_time();
 		info->philos[i].meal_count = 0;
 		info->philos[i].dead = 0;
-		info->philos[i].print_lock = &(info->print_mutex);
+		info->philos[i].print_mutex = &(info->print_mutex);
 		info->philos[i].death_mutex = &(info->death_mutex);
+		info->philos[i].death = &(info->someone_died);
 		info->philos[i].right_fork = &(info->forks[i]);
 		info->philos[i].left_fork = &(info->forks[(i + 1) % info->nb]);
+		info->philos[i].start_time = get_time();
+		info->philos[i].last_meal = info->philos->start_time;
+		info->philos[i].tt_die = info->tt_die;
+		info->philos[i].tt_eat = info->tt_eat;
+		info->philos[i].tt_sleep = info->tt_sleep;
+		i++;
 	}
 	return (0);
 }
 
 int	destroy_infos(t_info *info)
 {
-	int	i;
+	unsigned int	i;
 
 	pthread_mutex_destroy(&(info->print_mutex));
 	pthread_mutex_destroy(&(info->death_mutex));
-	i = -1;
+	i = 0;
 	if (info->forks)
 	{
-		while (++i < info->nb)
-			pthread_mutex_destroy(&(info->forks[i]));
+		while (i < info->nb)
+			pthread_mutex_destroy(&(info->forks[i++]));
 	}
 	free(info->forks);
 	free(info->philos);
@@ -88,6 +97,7 @@ int	handle_input(int argc, char *argv[], t_info *info)
 {
 	int	err;
 
+	ft_bzero(info, sizeof(t_info));
 	err = 0;
 	if (argc < 5 || argc > 6)
 	{
@@ -111,4 +121,3 @@ int	handle_input(int argc, char *argv[], t_info *info)
 		info->min_eat = 0;
 	return (check_error(err));
 }
-
