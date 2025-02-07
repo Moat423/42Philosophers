@@ -14,6 +14,11 @@ SHELL := /bin/bash
 MAKEFLAGS += --warn-undefined-variables
 .ONESHELL:
 
+
+OBJ_DIR := obj
+SRC_DIR := srcs
+HDRS_DIR := include
+
 CC := cc
 NAME := philo
 INCLUDES := -I$(HDRS_DIR)
@@ -34,18 +39,13 @@ LEAK_FLAGS := -fsanitize=leak
 # SANITIZE_NAME := $(NAME)_sanitize
 # SANITIZE_FLAGS := -fsanitize=address,undefined
 
-OBJ_DIR := obj
-SRC_DIR := srcs
-HDRS_DIR := include
-
 SRCS := $(addprefix $(SRC_DIR)/, \
 	main.c \
 	ft_strtoui.c \
 	)
 
-HDRS := $(HDRS_DIR)/philo.h
-
 OBJS := $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+HDRS := $(HDRS_DIR)/philo.h
 
 #PRETTY
 BOLD := $(shell printf '\033[1m')
@@ -56,25 +56,45 @@ YELLOW := $(shell printf '\033[33m')
 CLEAR_LINE := $(shell printf '\033[2K')
 CURSOR_UP := $(shell printf '\033[1A')
 
-.PHONY: all, clean, fclean, re
+# Additional pretty printing variables
+TOTAL_FILES := $(words $(SRCS))
+CURRENT_FILE := 0
+PROGRESS_BAR_WIDTH := 40
+
+define update_progress
+    @printf "$(CLEAR_LINE)"
+    @printf "\r$(YELLOW)Compiling: $(RESET)["
+    @$(eval CURRENT_FILE=$(shell echo $$(($(CURRENT_FILE) + 1))))
+    @$(eval PERCENTAGE=$(shell echo $$(($(CURRENT_FILE) * 100 / $(TOTAL_FILES)))))
+    @$(eval FILLED=$(shell echo $$(($(PERCENTAGE) * $(PROGRESS_BAR_WIDTH) / 100))))
+    @$(eval EMPTY=$(shell echo $$(($(PROGRESS_BAR_WIDTH) - $(FILLED)))))
+    @printf "%*s" ${FILLED} "" | tr ' ' '='
+    @printf "%*s" ${EMPTY} "" | tr ' ' ' '
+    @printf "] %3d%% %s" $(PERCENTAGE) "$<"
+endef
+
+.PHONY: all, clean, fclean, re, sanitize, asan, ubsan, leak
 
 all: $(NAME)
 
 run: all
 	./$(NAME)
 	
-$(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
-
-$(NAME): $(OBJS)
+# Main program
+$(NAME): $(LIBFT) $(LIBMLX) $(OBJS)
 	@printf "\n$(BOLD)Linking $(NAME)$(RESET)\n"
-	$(CC) $(OBJS) $(FINAL_LDFLAGS) -o $@
-	@printf "\n$(GREEN)$(BOLD)Build successful!$(RESET)\n" || \
-	@printf "$(RED)$(BOLD)Build failed!$(RESET)\n"
+	$(CC) $(FINAL_CFLAGS) $(OBJS) $(FINAL_LDFLAGS) -o $@
+	printf "\n$(GREEN)$(BOLD)Build successful!$(RESET)\n" || \
+	printf "$(RED)$(BOLD)Build failed!$(RESET)\n"
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HDRS) | $(OBJ_DIR)
-	@printf "$(BOLD)Compiling $(NAME)$(RESET)\n"
-	$(CC) $(FINAL_CFLAGS) $(INCLUDES) -c $< -o $@
+# Compile object files
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
+	$(call update_progress)
+	@$(CC) $(FINAL_CFLAGS) $(INCLUDES) -c $< -o $@
+
+# Create obj directory
+$(OBJ_DIR):
+	@mkdir -p $@
 
 # Targets for different sanitizer builds
 asan: FINAL_CFLAGS = $(CFLAGS) $(ASAN_FLAGS)
@@ -95,10 +115,12 @@ sanitize: FINAL_LDFLAGS = $(LDFLAGS) $(SANITIZE_FLAGS)
 sanitize: fclean $(NAME)
 
 clean:
+	@printf "$(BOLD)Cleaning object files...$(RESET)\n"
 	@rm -dRf $(OBJ_DIR)
-	@echo "objs removed"
+	@printf "objs removed\n"
 
 fclean: clean
+	@printf "$(BOLD)Cleaning executables...$(RESET)\n"
 	rm -f $(NAME)
 	@echo "executable removed"
 
