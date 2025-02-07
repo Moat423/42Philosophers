@@ -1,6 +1,5 @@
 
 #include "../headers/philo.h"
-#include <pthread.h>
 
 //take forks
 //lock print_mutex
@@ -8,9 +7,10 @@
 //unlock print_mutex
 //release forks
 //set mealtime (maybe put this first?)
-void	philo_eat(t_philo *philo)
+int	philo_eat(t_philo *philo)
 {
-	philo_take_forks(philo);
+	if (philo_take_forks(philo))
+		return (EXIT_FAILURE);
 	pthread_mutex_lock(philo->print_mutex);
 	ft_printf_action(EAT, philo);
 	pthread_mutex_unlock(philo->print_mutex);
@@ -20,62 +20,72 @@ void	philo_eat(t_philo *philo)
 	usleep(philo->tt_eat * 1000);
 	pthread_mutex_unlock(philo->right_fork);
 	pthread_mutex_unlock(philo->left_fork);
+	if (philo_needs_stop(philo))
+		return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }
 
-void	philo_take_forks(t_philo *philo)
+int	philo_take_forks(t_philo *philo)
 {
 	if (philo->id % 2)
 		usleep(ODD_PHILO_SLEEP_TIME);
 	if (philo_needs_stop(philo))
-		return ;
+		return (EXIT_FAILURE);
 	pthread_mutex_lock(philo->right_fork);
 	pthread_mutex_lock(philo->print_mutex);
 	ft_printf_action(FORK, philo);
 	pthread_mutex_unlock(philo->print_mutex);
 	if (philo_needs_stop(philo))
-		return ;
+		return (EXIT_FAILURE);
 	pthread_mutex_lock(philo->left_fork);
 	pthread_mutex_lock(philo->print_mutex);
 	ft_printf_action(FORK, philo);
 	pthread_mutex_unlock(philo->print_mutex);
+	// if (philo_needs_stop(philo))
+	// 	return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }
 
-void	philo_sleep(t_philo *philo)
+int	philo_sleep(t_philo *philo)
 {
 	if (philo_needs_stop(philo))
-		return ;
+		return (EXIT_FAILURE);
 	pthread_mutex_lock(philo->print_mutex);
 	ft_printf_action(SLEEP, philo);
 	pthread_mutex_unlock(philo->print_mutex);
 	if (philo->last_meal + philo->tt_sleep < philo->tt_die)
 	{
 		usleep(philo->tt_sleep * 1000);
-		return ;
+		return (EXIT_SUCCESS);
 	}
 	usleep(philo->tt_die * 1000);
-	philo_die(philo);
-	return ;
+	// philo_die(philo);
+	return (EXIT_FAILURE);
 }
 
 //TODO: remove this function for norminette
-void	philo_die(t_philo *philo)
+int	philo_die(t_philo *philo)
 {
 	if (philo_needs_stop(philo))
-		return ;
+		return (EXIT_FAILURE);
 	philo->dead = 1;
 	pthread_mutex_lock(philo->print_mutex);
 	ft_printf_action(DIE, philo);
 	pthread_mutex_unlock(philo->print_mutex);
+	return (EXIT_SUCCESS);
 }
 
-void	philo_think(t_philo *philo)
+int	philo_think(t_philo *philo)
 {
 	if (philo_needs_stop(philo))
-		return ;
+		return (EXIT_FAILURE);
 	pthread_mutex_lock(philo->print_mutex);
 	ft_printf_action(THINK, philo);
 	pthread_mutex_unlock(philo->print_mutex);
 	usleep(100);
+	// if (philo_needs_stop(philo))
+	// 	return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }
 
 int	philo_needs_stop(t_philo *philo)

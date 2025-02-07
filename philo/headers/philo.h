@@ -27,11 +27,11 @@ void	*philo_routine(void *arg);
 void	*single_philo(void *arg);
 void	*monitor_routine(void *arg);
 //philos.c
-void	philo_die(t_philo *philo);
-void	philo_sleep(t_philo *philo);
-void	philo_take_forks(t_philo *philo);
-void	philo_think(t_philo *philo);
+int	philo_take_forks(t_philo *philo);
+int	philo_die(t_philo *philo);
+int	philo_sleep(t_philo *philo);
+int	philo_think(t_philo *philo);
 int		philo_needs_stop(t_philo *philo);
-void	philo_eat(t_philo *philo);
+int	philo_eat(t_philo *philo);
 
 #endif //PHILO_H

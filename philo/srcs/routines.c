@@ -23,29 +23,41 @@ void	*philo_routine(void *arg)
 	i = 0;
 	while (!philo->meal_count || i++ < philo->meal_count)
 	{
-		philo_eat(philo);
-		philo_sleep(philo);
-		philo_think(philo);
+		if (philo_eat(philo))
+			return (NULL);
+		if (philo_sleep(philo))
+			return (NULL);
+		if (philo_think(philo))
+			return (NULL);
 	}
 	return (NULL);
 }
 
 void	*monitor_routine(void *arg)
 {
-	t_info	*info;
+	t_info			*info;
+	unsigned int	i;
 
 	info = (t_info *)arg;
 	while (1)
 	{
+		i = 0;
 		pthread_mutex_lock(&(info->time));
-		if (get_time() - info->philos->last_meal > info->tt_die)
+		while (i < info->nb)
 		{
-			pthread_mutex_lock(&(info->death_mutex));
-			info->someone_died = 1;
-			pthread_mutex_unlock(&(info->death_mutex));
+			if (get_time() - info->philos[i].last_meal > info->tt_die)
+			{
+				pthread_mutex_unlock(&(info->time));
+				pthread_mutex_lock(&(info->death_mutex));
+				info->someone_died = 1;
+				pthread_mutex_unlock(&(info->death_mutex));
+				pthread_mutex_lock(&(info->print_mutex));
+				ft_printf_action(DIE, &(info->philos[i]));
+				pthread_mutex_unlock(&(info->print_mutex));
+				return (NULL);
+			}
 			pthread_mutex_unlock(&(info->time));
-			return (NULL);
+			i++;
 		}
-		pthread_mutex_unlock(&(info->time));
 	}
 }
