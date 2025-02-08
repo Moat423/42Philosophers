@@ -53,14 +53,17 @@ int	philo_sleep(t_philo *philo)
 	pthread_mutex_lock(philo->print_mutex);
 	ft_printf_action(SLEEP, philo);
 	pthread_mutex_unlock(philo->print_mutex);
-	if (philo->last_meal + philo->tt_sleep < philo->tt_die)
+	pthread_mutex_lock(&philo->time_mutex);
+	if ((get_time() - philo->last_meal) + philo->tt_sleep > philo->tt_die)
 	{
-		usleep(philo->tt_sleep * 1000);
-		return (EXIT_SUCCESS);
+		pthread_mutex_unlock(&philo->time_mutex);
+		usleep(philo->tt_die * 1000);
+		return (EXIT_FAILURE);
 	}
-	usleep(philo->tt_die * 1000);
+	pthread_mutex_unlock(&philo->time_mutex);
+	usleep(philo->tt_sleep * 1000);
 	// philo_die(philo);
-	return (EXIT_FAILURE);
+	return (EXIT_SUCCESS);
 }
 
 //TODO: remove this function for norminette
