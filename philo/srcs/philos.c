@@ -5,8 +5,8 @@
 //lock print_mutex
 //print action
 //unlock print_mutex
-//release forks
 //set mealtime (maybe put this first?)
+//release forks
 int	philo_eat(t_philo *philo)
 {
 	if (philo_take_forks(philo))

@@ -87,7 +87,7 @@ int	monitor_check_ith_philo(t_info *info, unsigned int i, char *meals)
 	if (!meals[i] && info->philos[i].meal_count_reached)
 	{
 		pthread_mutex_unlock(&(info->philos[i].meal_count_mutex));
-		meals[i] = 1;
+		meals[i] = 'm';
 		if (ft_strlen(meals) == info->nb)
 		{
 			pthread_mutex_lock(&(info->death_mutex));
