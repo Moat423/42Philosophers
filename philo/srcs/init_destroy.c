@@ -46,8 +46,11 @@ int	init_arrays(t_info *info)
 		ft_bzero((void *)&(info->philos[i]), sizeof(t_philo));
 		if (pthread_mutex_init(&(info->philos[i].time_mutex), NULL))
 			return (destroy_infos(info));
+		if (pthread_mutex_init(&(info->philos[i].meal_count_mutex), NULL))
+			return (destroy_infos(info));
 		info->philos[i].id = i + 1;
-		info->philos[i].meal_count = 0;
+		info->philos[i].meal_count = (info)->min_eat;
+		info->philos[i].meal_count_reached = 0;
 		info->philos[i].dead = 0;
 		info->philos[i].print_mutex = &(info->print_mutex);
 		info->philos[i].death_mutex = &(info->death_mutex);

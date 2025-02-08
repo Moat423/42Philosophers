@@ -1,6 +1,8 @@
 
 #include "../headers/philo.h"
 
+int	monitor_check_ith_philo(t_info *info, unsigned int i, char *meals);
+
 void	*single_philo(void *arg)
 {
 	t_philo	*philo;
@@ -21,10 +23,17 @@ void	*philo_routine(void *arg)
 
 	philo = (t_philo *)arg;
 	i = 0;
-	while (!philo->meal_count || i++ < philo->meal_count)
+	while (1)
 	{
+		i++;
 		if (philo_eat(philo))
 			return (NULL);
+		if (philo->meal_count == i)
+		{
+			pthread_mutex_lock(&(philo->meal_count_mutex));
+			philo->meal_count_reached = 1;
+			pthread_mutex_unlock(&(philo->meal_count_mutex));
+		}
 		if (philo_sleep(philo))
 			return (NULL);
 		if (philo_think(philo))
@@ -37,27 +46,56 @@ void	*monitor_routine(void *arg)
 {
 	t_info			*info;
 	unsigned int	i;
+	char			*meal_count_reached;
 
 	info = (t_info *)arg;
+	meal_count_reached = malloc(sizeof(char) * info->nb);
+	ft_bzero(meal_count_reached, sizeof(char) * info->nb);
 	while (1)
 	{
 		i = 0;
 		pthread_mutex_lock(&(info->time));
 		while (i < info->nb)
 		{
-			if (get_time() - info->philos[i].last_meal > info->tt_die)
+			if (monitor_check_ith_philo(info, i, meal_count_reached))
 			{
-				pthread_mutex_unlock(&(info->time));
-				pthread_mutex_lock(&(info->death_mutex));
-				info->someone_died = 1;
-				pthread_mutex_unlock(&(info->death_mutex));
-				pthread_mutex_lock(&(info->print_mutex));
-				ft_printf_action(DIE, &(info->philos[i]));
-				pthread_mutex_unlock(&(info->print_mutex));
+				free(meal_count_reached);
 				return (NULL);
 			}
-			pthread_mutex_unlock(&(info->time));
 			i++;
 		}
 	}
+	free(meal_count_reached);
+	return (NULL);
+}
+
+int	monitor_check_ith_philo(t_info *info, unsigned int i, char *meals)
+{
+	if (get_time() - info->philos[i].last_meal > info->tt_die)
+	{
+		pthread_mutex_unlock(&(info->time));
+		pthread_mutex_lock(&(info->death_mutex));
+		info->someone_died = 1;
+		pthread_mutex_unlock(&(info->death_mutex));
+		pthread_mutex_lock(&(info->print_mutex));
+		ft_printf_action(DIE, &(info->philos[i]));
+		pthread_mutex_unlock(&(info->print_mutex));
+		return (1);
+	}
+	pthread_mutex_unlock(&(info->time));
+	pthread_mutex_lock(&(info->philos[i].meal_count_mutex));
+	if (!meals[i] && info->philos[i].meal_count_reached)
+	{
+		pthread_mutex_unlock(&(info->philos[i].meal_count_mutex));
+		meals[i] = 1;
+		if (ft_strlen(meals) == info->nb)
+		{
+			pthread_mutex_lock(&(info->death_mutex));
+			info->someone_died = 1;
+			pthread_mutex_unlock(&(info->death_mutex));
+			return (1);
+		}
+	}
+	pthread_mutex_unlock(&(info->philos[i].meal_count_mutex));
+	return (0);
 }

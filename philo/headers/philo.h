@@ -19,6 +19,7 @@ int	init_arrays(t_info *info);
 int	destroy_infos(t_info *info);
 //utils.c
 int		get_time(void);
+unsigned int	ft_strlen(char *str);
 void	ft_bzero(void *s, size_t size);
 int	ft_printf_action(int action, t_philo *p);
 unsigned int	ft_atoui(const char *str, int *err);

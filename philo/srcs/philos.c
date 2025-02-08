@@ -36,16 +36,24 @@ int	philo_take_forks(t_philo *philo)
 	ft_printf_action(FORK, philo);
 	pthread_mutex_unlock(philo->print_mutex);
 	if (philo_needs_stop(philo))
+	{
+		pthread_mutex_unlock(philo->right_fork);
 		return (EXIT_FAILURE);
+	}
 	pthread_mutex_lock(philo->left_fork);
 	pthread_mutex_lock(philo->print_mutex);
 	ft_printf_action(FORK, philo);
 	pthread_mutex_unlock(philo->print_mutex);
-	// if (philo_needs_stop(philo))
-	// 	return (EXIT_FAILURE);
+	if (philo_needs_stop(philo))
+	{
+		pthread_mutex_unlock(philo->right_fork);
+		pthread_mutex_unlock(philo->left_fork);
+		return (EXIT_FAILURE);
+	}
 	return (EXIT_SUCCESS);
 }
 
+//maybe use philo->tt_eat as an approximation for get_time - last_meal
 int	philo_sleep(t_philo *philo)
 {
 	if (philo_needs_stop(philo))
@@ -85,9 +93,9 @@ int	philo_think(t_philo *philo)
 	pthread_mutex_lock(philo->print_mutex);
 	ft_printf_action(THINK, philo);
 	pthread_mutex_unlock(philo->print_mutex);
-	usleep(100);
-	// if (philo_needs_stop(philo))
-	// 	return (EXIT_FAILURE);
+	usleep(700);
+	if (philo_needs_stop(philo))
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 

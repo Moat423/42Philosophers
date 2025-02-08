@@ -14,6 +14,16 @@ void	ft_bzero(void *s, size_t size)
 		str[i++] = 0;
 }
 
+unsigned int	ft_strlen(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+		i++;
+	return (i);
+}
+
 int	ft_printf_action(int action, t_philo *p)
 {
 	int		ret;
