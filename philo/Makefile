@@ -6,7 +6,7 @@
 #    By: lmeubrin <lmeubrin@student.42berlin.       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/22 15:55:27 by lmeubrin          #+#    #+#              #
-#    Updated: 2025/02/07 16:41:10 by lmeubrin         ###   ########.fr        #
+#    Updated: 2025/02/08 18:30:38 by lmeubrin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,10 +34,8 @@ FINAL_LDFLAGS = $(LDFLAGS)
 ASAN_FLAGS := -fsanitize=address
 UBSAN_FLAGS := -fsanitize=undefined
 LEAK_FLAGS := -fsanitize=leak
-
-# # fsanitize
-# SANITIZE_NAME := $(NAME)_sanitize
-# SANITIZE_FLAGS := -fsanitize=address,undefined
+TSAN_FLAGS := -fsanitize=thread
+SANITIZE_FLAGS := $(ASAN_FLAGS) $(UBSAN_FLAGS)
 
 SRCS := $(addprefix $(SRC_DIR)/, \
 	main.c \
@@ -76,7 +74,7 @@ define update_progress
     @printf "] %3d%% %s" $(PERCENTAGE) "$<"
 endef
 
-.PHONY: all, clean, fclean, re, sanitize, asan, ubsan, leak
+.PHONY: all, clean, fclean, re, sanitize, asan, ubsan, leak, tsan
 
 all: $(NAME)
 
@@ -112,7 +110,11 @@ leak: FINAL_CFLAGS = $(CFLAGS) $(LEAK_FLAGS)
 leak: FINAL_LDFLAGS = $(LDFLAGS) $(LEAK_FLAGS)
 leak: fclean $(NAME)
 
-# Combined sanitizer (your original sanitize target)
+tsan: FINAL_CFLAGS = $(CFLAGS) $(TSAN_FLAGS)
+tsan: FINAL_LDFLAGS = $(LDFLAGS) $(TSAN_FLAGS)
+tsan: fclean $(NAME)
+
+# Combined sanitizer
 sanitize: FINAL_CFLAGS = $(CFLAGS) $(SANITIZE_FLAGS)
 sanitize: FINAL_LDFLAGS = $(LDFLAGS) $(SANITIZE_FLAGS)
 sanitize: fclean $(NAME)
