@@ -1,6 +1,9 @@
 
 #include "../headers/philo.h"
 
+//TODO: philos should start together
+//fix: races
+
 int	monitor_check_ith_philo(t_info *info, unsigned int i, char *meals);
 
 void	*single_philo(void *arg)
@@ -54,7 +57,6 @@ void	*monitor_routine(void *arg)
 	while (1)
 	{
 		i = 0;
-		pthread_mutex_lock(&(info->time));
 		while (i < info->nb)
 		{
 			if (monitor_check_ith_philo(info, i, meal_count_reached))
@@ -71,6 +73,7 @@ void	*monitor_routine(void *arg)
 
 int	monitor_check_ith_philo(t_info *info, unsigned int i, char *meals)
 {
+	pthread_mutex_lock(&(info->time));
 	if (get_time() - info->philos[i].last_meal > info->tt_die)
 	{
 		pthread_mutex_unlock(&(info->time));
@@ -95,6 +98,7 @@ int	monitor_check_ith_philo(t_info *info, unsigned int i, char *meals)
 			pthread_mutex_unlock(&(info->death_mutex));
 			return (1);
 		}
+		pthread_mutex_lock(&(info->philos[i].meal_count_mutex)); // if possible, don't lock unnsesarily
 	}
 	pthread_mutex_unlock(&(info->philos[i].meal_count_mutex));
 	return (0);
