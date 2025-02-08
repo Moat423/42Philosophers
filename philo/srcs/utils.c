@@ -10,8 +10,8 @@ void	ft_bzero(void *s, size_t size)
 
 	str = (char *)s;
 	i = 0;
-	while (i++ < size)
-		str[i] = 0;
+	while (i < size)
+		str[i++] = 0;
 }
 
 int	ft_printf_action(int action, t_philo *p)
