@@ -79,6 +79,5 @@ typedef struct s_info
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	death_mutex;
-	pthread_mutex_t	time;
 }					t_info;
 #endif //STRUCTS_H

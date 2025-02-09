@@ -1,6 +1,8 @@
 
 #include "../headers/philo.h"
 
+int	destroy_philos(t_info *info);
+
 int	init_locks(t_info *info)
 {
 	info->philos = NULL;
@@ -80,6 +82,21 @@ int	destroy_infos(t_info *info)
 			pthread_mutex_destroy(&(info->forks[i++]));
 	}
 	free(info->forks);
+	destroy_philos(info);
+	return (1);
+}
+
+int	destroy_philos(t_info *info)
+{
+	unsigned int	i;
+
+	i = 0;
+	while (i < info->nb)
+	{
+		pthread_mutex_destroy(&(info->philos[i].time_mutex));
+		pthread_mutex_destroy(&(info->philos[i].meal_count_mutex));
+		i++;
+	}
 	free(info->philos);
 	return (1);
 }
