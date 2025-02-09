@@ -73,10 +73,10 @@ void	*monitor_routine(void *arg)
 
 int	monitor_check_ith_philo(t_info *info, unsigned int i, char *meals)
 {
-	pthread_mutex_lock(&(info->time));
+	pthread_mutex_lock(&(info->philos[i].time_mutex));
 	if (get_time() - info->philos[i].last_meal > info->tt_die)
 	{
-		pthread_mutex_unlock(&(info->time));
+		pthread_mutex_unlock(&(info->philos[i].time_mutex));
 		pthread_mutex_lock(&(info->death_mutex));
 		info->someone_died = 1;
 		pthread_mutex_unlock(&(info->death_mutex));
@@ -85,7 +85,7 @@ int	monitor_check_ith_philo(t_info *info, unsigned int i, char *meals)
 		pthread_mutex_unlock(&(info->print_mutex));
 		return (1);
 	}
-	pthread_mutex_unlock(&(info->time));
+	pthread_mutex_unlock(&(info->philos[i].time_mutex));
 	pthread_mutex_lock(&(info->philos[i].meal_count_mutex));
 	if (!meals[i] && info->philos[i].meal_count_reached)
 	{
