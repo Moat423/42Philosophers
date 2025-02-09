@@ -47,6 +47,8 @@ void	*philo_routine(void *arg)
 	return (NULL);
 }
 
+//technically, checking mealcount would not be necessary if min-meals is 0,
+//but i don't need the extra if
 void	*monitor_routine(void *arg)
 {
 	t_info			*info;
@@ -91,20 +93,5 @@ int	monitor_check_ith_philo(t_info *info, unsigned int i)
 		return (1);
 	}
 	pthread_mutex_unlock(&(info->philos[i].time_mutex));
-	// pthread_mutex_lock(&(info->philos[i].meal_count_mutex));
-	// if (!meals[i] && info->philos[i].meal_count_reached)
-	// {
-	// 	pthread_mutex_unlock(&(info->philos[i].meal_count_mutex));
-	// 	meals[i] = 'm';
-	// 	if (ft_strlen(meals) == info->nb)
-	// 	{
-	// 		pthread_mutex_lock(&(info->death_mutex));
-	// 		info->someone_died = 1;
-	// 		pthread_mutex_unlock(&(info->death_mutex));
-	// 		return (1);
-	// 	}
-	// 	pthread_mutex_lock(&(info->philos[i].meal_count_mutex)); // if possible, don't lock unnsesarily
-	// }
-	// pthread_mutex_unlock(&(info->philos[i].meal_count_mutex));
 	return (0);
 }

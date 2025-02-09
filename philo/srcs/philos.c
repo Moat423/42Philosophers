@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philos.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lmeubrin <lmeubrin@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/09 15:23:32 by lmeubrin          #+#    #+#             */
+/*   Updated: 2025/02/09 15:23:39 by lmeubrin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../headers/philo.h"
 
@@ -20,8 +31,6 @@ int	philo_eat(t_philo *philo)
 	usleep(philo->tt_eat * 1000);
 	pthread_mutex_unlock(philo->right_fork);
 	pthread_mutex_unlock(philo->left_fork);
-	// if (philo_needs_stop(philo))
-	// 	return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
@@ -67,8 +76,6 @@ int	philo_sleep(t_philo *philo)
 	}
 	pthread_mutex_unlock(&philo->time_mutex);
 	usleep(philo->tt_sleep * 1000);
-	// if (philo_needs_stop(philo))
-	// 	return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
@@ -80,8 +87,6 @@ int	philo_think(t_philo *philo)
 	ft_printf_action(THINK, philo);
 	pthread_mutex_unlock(philo->print_mutex);
 	usleep(100);
-	// if (philo_needs_stop(philo))
-	// 	return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 

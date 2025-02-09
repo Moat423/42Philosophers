@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lmeubrin <lmeubrin@student.42berlin.d      +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/02/09 15:25:44 by lmeubrin          #+#    #+#             */
+/*   Updated: 2025/02/09 15:25:46 by lmeubrin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "../headers/philo.h"
 
@@ -31,7 +42,6 @@ int	ft_printf_action(int action, t_philo *p)
 
 	ret = 0;
 	time = get_time() - p->start_time;
-	// pthread_mutex_lock(p->print_mutex);
 	if (action == FORK)
 		ret = printf(YEL"%zu %d has taken a fork\n"RESET, time, p->id);
 	else if (action == EAT)
@@ -42,7 +52,6 @@ int	ft_printf_action(int action, t_philo *p)
 		ret = printf(GREEN"%zu %d is thinking\n"RESET, time, p->id);
 	else if (action == DIE)
 		ret = printf(BRED"%zu %d died\n"RESET, time, p->id);
-	// pthread_mutex_unlock(p->print_mutex);
 	return (ret);
 }
 

@@ -6,11 +6,13 @@
 /*   By: lmeubrin <lmeubrin@student.42berlin.d      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:13:59 by lmeubrin          #+#    #+#             */
-/*   Updated: 2025/02/07 17:24:31 by lmeubrin         ###   ########.fr       */
+/*   Updated: 2025/02/09 15:39:36 by lmeubrin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/philo.h"
+
+void	create_threads(t_info *in, pthread_t *thread_ids);
 
 // argv[1] = number_of_philosophers
 // argv[2] = time_to_die
@@ -32,38 +34,46 @@ int	main(int argc, char *argv[])
 }
 
 //thread_ids is null-terminated array of pthread_t
-void	start_simulation(t_info *info)
+void	start_simulation(t_info *in)
 {
 	pthread_t		*thread_ids;
 	unsigned int	i;
 
-	thread_ids = malloc(sizeof(pthread_t) * (info->nb + 1));
+	thread_ids = malloc(sizeof(pthread_t) * (in->nb + 1));
 	if (!thread_ids)
 		return ;
-	ft_bzero(thread_ids, sizeof(pthread_t) * (info->nb + 1));
-	if (info->nb == 1)
+	ft_bzero(thread_ids, sizeof(pthread_t) * (in->nb + 1));
+	if (in->nb == 1)
 	{
-		if (!pthread_create(&thread_ids[0], NULL, single_philo, &info->philos[0]))
+		if (!pthread_create(&thread_ids[0], NULL, single_philo, &in->philos[0]))
 			pthread_join(thread_ids[0], NULL);
 		free(thread_ids);
 		return ;
 	}
+	create_threads(in, thread_ids);
 	i = 0;
-	while (i < info->nb)
+	while (i <= in->nb && thread_ids[i])
+		pthread_join(thread_ids[i++], NULL);
+	free(thread_ids);
+}
+
+void	create_threads(t_info *in, pthread_t *thread_ids)
+{
+	unsigned int	i;
+
+	i = 0;
+	while (i < in->nb)
 	{
-		if (pthread_create(&thread_ids[i], NULL, philo_routine, &info->philos[i]))
+		if (pthread_create(&thread_ids[i], NULL, philo_routine, &in->philos[i]))
 		{
 			thread_ids[i] = 0;
 			break ;
 		}
 		i++;
 	}
-	if (thread_ids[i - 1] && pthread_create(&thread_ids[i], NULL, monitor_routine, info))
+	if (thread_ids[i - 1] && \
+		pthread_create(&thread_ids[i], NULL, monitor_routine, in))
 		thread_ids[i] = 0;
-	i = 0;
-	while (i <= info->nb && thread_ids[i])
-		pthread_join(thread_ids[i++], NULL);
-	free(thread_ids);
 }
 
 void	ft_printinfo(t_info *info)
@@ -74,7 +84,7 @@ void	ft_printinfo(t_info *info)
 	printf("time to eat:			%d\n", info->tt_eat);
 	printf("time to sleep:			%d\n", info->tt_sleep);
 	if (info->min_eat != 0)
-		printf("number of times each philosopher must eat:	%d\n", info->min_eat);
+		printf("times each philosopher must eat:	%d\n", info->min_eat);
 	else
 		printf("running indefinitely or till a philosopher dies\n");
 }
