@@ -6,14 +6,11 @@
 /*   By: lmeubrin <lmeubrin@student.42berlin.d      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 15:40:23 by lmeubrin          #+#    #+#             */
-/*   Updated: 2025/02/09 15:40:30 by lmeubrin         ###   ########.fr       */
+/*   Updated: 2025/02/09 15:44:05 by lmeubrin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/philo.h"
-
-//TODO: philos should start together
-//fix: races
 
 int	monitor_check_ith_philo(t_info *info, unsigned int i);
 

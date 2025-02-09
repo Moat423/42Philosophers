@@ -6,7 +6,7 @@
 /*   By: lmeubrin <lmeubrin@student.42berlin.d      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/04 14:13:59 by lmeubrin          #+#    #+#             */
-/*   Updated: 2025/02/09 15:39:36 by lmeubrin         ###   ########.fr       */
+/*   Updated: 2025/02/09 15:44:46 by lmeubrin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,35 @@ void	create_threads(t_info *in, pthread_t *thread_ids)
 	if (thread_ids[i - 1] && \
 		pthread_create(&thread_ids[i], NULL, monitor_routine, in))
 		thread_ids[i] = 0;
+}
+
+int	handle_input(int argc, char *argv[], t_info *info)
+{
+	int	err;
+
+	ft_bzero(info, sizeof(t_info));
+	err = 0;
+	if (argc < 5 || argc > 6)
+	{
+		printf("Error: Wrong number of arguments\n");
+		return (1);
+	}
+	info->nb = ft_atoui(argv[1], &err);
+	info->tt_die = ft_atoui(argv[2], &err);
+	info->tt_eat = ft_atoui(argv[3], &err);
+	info->tt_sleep = ft_atoui(argv[4], &err);
+	if (argc == 6)
+	{
+		info->min_eat = ft_atoui(argv[5], &err);
+		if (info->min_eat == 0 && err == 0)
+		{
+			printf("done\n");
+			return (1);
+		}
+	}
+	else
+		info->min_eat = 0;
+	return (check_error(err));
 }
 
 void	ft_printinfo(t_info *info)

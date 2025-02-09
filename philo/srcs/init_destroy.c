@@ -6,7 +6,7 @@
 /*   By: lmeubrin <lmeubrin@student.42berlin.d      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 15:23:53 by lmeubrin          #+#    #+#             */
-/*   Updated: 2025/02/09 15:41:26 by lmeubrin         ###   ########.fr       */
+/*   Updated: 2025/02/09 15:49:47 by lmeubrin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ int	init_locks(t_info *info)
 	info->forks = NULL;
 	if (pthread_mutex_init(&(info->print_mutex), NULL))
 	{
-		pthread_mutex_destroy(&(info->print_mutex));
 		free(info);
 		info = NULL;
 		return (1);
@@ -28,7 +27,6 @@ int	init_locks(t_info *info)
 	if (pthread_mutex_init(&(info->death_mutex), NULL))
 	{
 		pthread_mutex_destroy(&(info->print_mutex));
-		pthread_mutex_destroy(&(info->death_mutex));
 		free(info);
 		info = NULL;
 		return (1);
@@ -37,7 +35,6 @@ int	init_locks(t_info *info)
 	{
 		pthread_mutex_destroy(&(info->print_mutex));
 		pthread_mutex_destroy(&(info->death_mutex));
-		pthread_mutex_destroy(&(info->meal_count_mutex));
 		free(info);
 		info = NULL;
 		return (1);
@@ -65,13 +62,15 @@ int	init_arrays(t_info *info)
 	{
 		if (pthread_mutex_init(&(info->forks[i]), NULL))
 			return (destroy_infos(info));
-		ft_bzero((void *)&(info->philos[i]), sizeof(t_philo));
 		if (pthread_mutex_init(&(info->philos[i].time_mutex), NULL))
 			return (destroy_infos(info));
 		info->philos[i].id = i + 1;
 		info->philos[i].meal_count = (info)->min_eat;
+		info->philos[i].tt_die = info->tt_die;
+		info->philos[i].tt_eat = info->tt_eat;
+		info->philos[i].tt_sleep = info->tt_sleep;
+		info->philos[i].nb_philos = info->nb;
 		info->philos[i].meal_count_total = &(info->meal_count_total);
-		info->philos[i].dead = 0;
 		info->philos[i].print_mutex = &(info->print_mutex);
 		info->philos[i].death_mutex = &(info->death_mutex);
 		info->philos[i].meal_count_mutex = &(info->meal_count_mutex);
@@ -88,10 +87,6 @@ int	init_arrays(t_info *info)
 		}
 		info->philos[i].start_time = get_time();
 		info->philos[i].last_meal = info->philos->start_time;
-		info->philos[i].tt_die = info->tt_die;
-		info->philos[i].tt_eat = info->tt_eat;
-		info->philos[i].tt_sleep = info->tt_sleep;
-		info->philos[i].nb_philos = info->nb;
 		i++;
 	}
 	return (0);
@@ -127,33 +122,4 @@ int	destroy_philos(t_info *info)
 	}
 	free(info->philos);
 	return (1);
-}
-
-int	handle_input(int argc, char *argv[], t_info *info)
-{
-	int	err;
-
-	ft_bzero(info, sizeof(t_info));
-	err = 0;
-	if (argc < 5 || argc > 6)
-	{
-		printf("Error: Wrong number of arguments\n");
-		return (1);
-	}
-	info->nb = ft_atoui(argv[1], &err);
-	info->tt_die = ft_atoui(argv[2], &err);
-	info->tt_eat = ft_atoui(argv[3], &err);
-	info->tt_sleep = ft_atoui(argv[4], &err);
-	if (argc == 6)
-	{
-		info->min_eat = ft_atoui(argv[5], &err);
-		if (info->min_eat == 0 && err == 0)
-		{
-			printf("done\n");
-			return (1);
-		}
-	}
-	else
-		info->min_eat = 0;
-	return (check_error(err));
 }

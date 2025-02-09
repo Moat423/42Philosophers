@@ -6,7 +6,7 @@
 /*   By: lmeubrin <lmeubrin@student.42berlin.d      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 15:42:06 by lmeubrin          #+#    #+#             */
-/*   Updated: 2025/02/09 15:42:07 by lmeubrin         ###   ########.fr       */
+/*   Updated: 2025/02/09 15:45:06 by lmeubrin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@
 //main.c
 void			ft_printinfo(t_info *info);
 void			start_simulation(t_info *info);
-//init_destroy.c
 int				handle_input(int argc, char *argv[], t_info *info);
+//init_destroy.c
 int				init_locks(t_info *info);
 int				init_arrays(t_info *info);
 int				destroy_infos(t_info *info);
