@@ -55,8 +55,8 @@ typedef struct s_philo
 	size_t			last_meal;
 	pthread_mutex_t	time_mutex;
 	unsigned int	meal_count;
-	unsigned int	meal_count_reached;
-	pthread_mutex_t	meal_count_mutex;
+	unsigned int	*meal_count_total;
+	pthread_mutex_t	*meal_count_mutex;
 	int				dead;
 	pthread_mutex_t	*print_mutex;
 	pthread_mutex_t	*death_mutex;
@@ -80,5 +80,7 @@ typedef struct s_info
 	pthread_mutex_t	*forks;
 	pthread_mutex_t	print_mutex;
 	pthread_mutex_t	death_mutex;
+	pthread_mutex_t	meal_count_mutex;
+	unsigned int	meal_count_total;
 }					t_info;
 #endif //STRUCTS_H

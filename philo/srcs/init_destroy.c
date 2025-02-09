@@ -22,6 +22,15 @@ int	init_locks(t_info *info)
 		info = NULL;
 		return (1);
 	}
+	if (pthread_mutex_init(&(info->meal_count_mutex), NULL))
+	{
+		pthread_mutex_destroy(&(info->print_mutex));
+		pthread_mutex_destroy(&(info->death_mutex));
+		pthread_mutex_destroy(&(info->meal_count_mutex));
+		free(info);
+		info = NULL;
+		return (1);
+	}
 	if (init_arrays(info))
 	{
 		destroy_infos(info);
@@ -48,14 +57,13 @@ int	init_arrays(t_info *info)
 		ft_bzero((void *)&(info->philos[i]), sizeof(t_philo));
 		if (pthread_mutex_init(&(info->philos[i].time_mutex), NULL))
 			return (destroy_infos(info));
-		if (pthread_mutex_init(&(info->philos[i].meal_count_mutex), NULL))
-			return (destroy_infos(info));
 		info->philos[i].id = i + 1;
 		info->philos[i].meal_count = (info)->min_eat;
-		info->philos[i].meal_count_reached = 0;
+		info->philos[i].meal_count_total = &(info->meal_count_total);
 		info->philos[i].dead = 0;
 		info->philos[i].print_mutex = &(info->print_mutex);
 		info->philos[i].death_mutex = &(info->death_mutex);
+		info->philos[i].meal_count_mutex = &(info->meal_count_mutex);
 		info->philos[i].death = &(info->someone_died);
 		if (i % 2)
 		{
@@ -84,6 +92,7 @@ int	destroy_infos(t_info *info)
 
 	pthread_mutex_destroy(&(info->print_mutex));
 	pthread_mutex_destroy(&(info->death_mutex));
+	pthread_mutex_destroy(&(info->meal_count_mutex));
 	i = 0;
 	if (info->forks)
 	{
@@ -103,7 +112,6 @@ int	destroy_philos(t_info *info)
 	while (i < info->nb)
 	{
 		pthread_mutex_destroy(&(info->philos[i].time_mutex));
-		pthread_mutex_destroy(&(info->philos[i].meal_count_mutex));
 		i++;
 	}
 	free(info->philos);
