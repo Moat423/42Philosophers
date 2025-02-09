@@ -6,7 +6,7 @@
 /*   By: lmeubrin <lmeubrin@student.42berlin.d      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 15:23:53 by lmeubrin          #+#    #+#             */
-/*   Updated: 2025/02/09 15:23:56 by lmeubrin         ###   ########.fr       */
+/*   Updated: 2025/02/09 15:41:26 by lmeubrin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,18 +127,6 @@ int	destroy_philos(t_info *info)
 	}
 	free(info->philos);
 	return (1);
-}
-
-int	check_error(int err)
-{
-	if (err)
-	{
-		printf("usage:\n");
-		printf("./philo number_of_philosophers time_to_die time_to_eat\n");
-		printf("time_to_sleep [number_of_times_each_philosopher_must_eat]\n");
-		return (1);
-	}
-	return (0);
 }
 
 int	handle_input(int argc, char *argv[], t_info *info)

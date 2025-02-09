@@ -6,13 +6,25 @@
 /*   By: lmeubrin <lmeubrin@student.42berlin.d      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 15:25:44 by lmeubrin          #+#    #+#             */
-/*   Updated: 2025/02/09 15:25:46 by lmeubrin         ###   ########.fr       */
+/*   Updated: 2025/02/09 15:41:42 by lmeubrin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../headers/philo.h"
 
 int	get_time(void);
+
+int	check_error(int err)
+{
+	if (err)
+	{
+		printf("usage:\n");
+		printf("./philo number_of_philosophers time_to_die time_to_eat\n");
+		printf("time_to_sleep [number_of_times_each_philosopher_must_eat]\n");
+		return (1);
+	}
+	return (0);
+}
 
 void	ft_bzero(void *s, size_t size)
 {
@@ -23,16 +35,6 @@ void	ft_bzero(void *s, size_t size)
 	i = 0;
 	while (i < size)
 		str[i++] = 0;
-}
-
-unsigned int	ft_strlen(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
 }
 
 int	ft_printf_action(int action, t_philo *p)
