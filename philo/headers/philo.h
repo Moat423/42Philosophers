@@ -6,7 +6,7 @@
 /*   By: lmeubrin <lmeubrin@student.42berlin.d      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/09 15:42:06 by lmeubrin          #+#    #+#             */
-/*   Updated: 2025/02/09 15:45:06 by lmeubrin         ###   ########.fr       */
+/*   Updated: 2025/02/09 16:20:31 by lmeubrin         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,11 @@ int				handle_input(int argc, char *argv[], t_info *info);
 //init_destroy.c
 int				init_locks(t_info *info);
 int				init_arrays(t_info *info);
+int				free_info(t_info **info);
+void			copy_infos_to_nth_philo(t_info *info, int n);
+//destroy.c
 int				destroy_infos(t_info *info);
+int				destroy_philos(t_info *info);
 //utils.c
 int				get_time(void);
 void			ft_bzero(void *s, size_t size);

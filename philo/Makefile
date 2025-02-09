@@ -6,7 +6,7 @@
 #    By: lmeubrin <lmeubrin@student.42berlin.       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/04/22 15:55:27 by lmeubrin          #+#    #+#              #
-#    Updated: 2025/02/08 18:30:38 by lmeubrin         ###   ########.fr        #
+#    Updated: 2025/02/09 16:21:05 by lmeubrin         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -39,7 +39,8 @@ SANITIZE_FLAGS := $(ASAN_FLAGS) $(UBSAN_FLAGS)
 
 SRCS := $(addprefix $(SRC_DIR)/, \
 	main.c \
-	init_destroy.c \
+	init.c \
+	destroy.c \
 	utils.c \
 	philos.c \
 	routines.c \
