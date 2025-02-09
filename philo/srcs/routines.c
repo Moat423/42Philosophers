@@ -26,6 +26,8 @@ void	*philo_routine(void *arg)
 
 	philo = (t_philo *)arg;
 	i = 0;
+	if (philo->id % 2)
+		usleep(ODD_PHILO_SLEEP_TIME);
 	while (1)
 	{
 		i++;
@@ -39,8 +41,9 @@ void	*philo_routine(void *arg)
 		}
 		if (philo_sleep(philo))
 			return (NULL);
-		if (philo_think(philo))
-			return (NULL);
+		if (philo->nb_philos % 2)
+			if (philo_think(philo))
+				return (NULL);
 	}
 	return (NULL);
 }

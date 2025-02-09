@@ -20,28 +20,44 @@ int	philo_eat(t_philo *philo)
 	usleep(philo->tt_eat * 1000);
 	pthread_mutex_unlock(philo->right_fork);
 	pthread_mutex_unlock(philo->left_fork);
-	if (philo_needs_stop(philo))
-		return (EXIT_FAILURE);
+	// if (philo_needs_stop(philo))
+	// 	return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
 int	philo_take_forks(t_philo *philo)
 {
-	if (philo->id % 2)
-		usleep(ODD_PHILO_SLEEP_TIME);
+	// int	odd;
+
+	// if (philo->id % 2)
+	// 	odd = 1;
+	// else
+	// 	odd = 0;
+	// if (philo->id % 2)
+	// 	usleep(ODD_PHILO_SLEEP_TIME);
 	if (philo_needs_stop(philo))
 		return (EXIT_FAILURE);
+	// if (odd)
 	pthread_mutex_lock(philo->right_fork);
-	pthread_mutex_lock(philo->print_mutex);
-	ft_printf_action(FORK, philo);
-	pthread_mutex_unlock(philo->print_mutex);
+	// pthread_mutex_lock(philo->print_mutex);
+	// ft_printf_action(FORK, philo);
+	// pthread_mutex_unlock(philo->print_mutex);
+	// if (philo_needs_stop(philo))
+	// {
+	// 	pthread_mutex_unlock(philo->right_fork);
+	// 	return (EXIT_FAILURE);
+	// }
+	pthread_mutex_lock(philo->left_fork);
+	// if (!odd)
+	// 	pthread_mutex_lock(philo->right_fork);
 	if (philo_needs_stop(philo))
 	{
 		pthread_mutex_unlock(philo->right_fork);
+		pthread_mutex_unlock(philo->left_fork);
 		return (EXIT_FAILURE);
 	}
-	pthread_mutex_lock(philo->left_fork);
 	pthread_mutex_lock(philo->print_mutex);
+	ft_printf_action(FORK, philo);
 	ft_printf_action(FORK, philo);
 	pthread_mutex_unlock(philo->print_mutex);
 	if (philo_needs_stop(philo))
@@ -70,19 +86,8 @@ int	philo_sleep(t_philo *philo)
 	}
 	pthread_mutex_unlock(&philo->time_mutex);
 	usleep(philo->tt_sleep * 1000);
-	// philo_die(philo);
-	return (EXIT_SUCCESS);
-}
-
-//TODO: remove this function for norminette
-int	philo_die(t_philo *philo)
-{
-	if (philo_needs_stop(philo))
-		return (EXIT_FAILURE);
-	philo->dead = 1;
-	pthread_mutex_lock(philo->print_mutex);
-	ft_printf_action(DIE, philo);
-	pthread_mutex_unlock(philo->print_mutex);
+	// if (philo_needs_stop(philo))
+	// 	return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 
@@ -93,9 +98,9 @@ int	philo_think(t_philo *philo)
 	pthread_mutex_lock(philo->print_mutex);
 	ft_printf_action(THINK, philo);
 	pthread_mutex_unlock(philo->print_mutex);
-	usleep(700);
-	if (philo_needs_stop(philo))
-		return (EXIT_FAILURE);
+	usleep(100);
+	// if (philo_needs_stop(philo))
+	// 	return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }
 

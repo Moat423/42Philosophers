@@ -57,13 +57,22 @@ int	init_arrays(t_info *info)
 		info->philos[i].print_mutex = &(info->print_mutex);
 		info->philos[i].death_mutex = &(info->death_mutex);
 		info->philos[i].death = &(info->someone_died);
-		info->philos[i].right_fork = &(info->forks[i]);
-		info->philos[i].left_fork = &(info->forks[(i + 1) % info->nb]);
+		if (i % 2)
+		{
+			info->philos[i].right_fork = &(info->forks[i]);
+			info->philos[i].left_fork = &(info->forks[(i + 1) % info->nb]);
+		}
+		else
+		{
+			info->philos[i].right_fork = &(info->forks[(i + 1) % info->nb]);
+			info->philos[i].left_fork = &(info->forks[i]);
+		}
 		info->philos[i].start_time = get_time();
 		info->philos[i].last_meal = info->philos->start_time;
 		info->philos[i].tt_die = info->tt_die;
 		info->philos[i].tt_eat = info->tt_eat;
 		info->philos[i].tt_sleep = info->tt_sleep;
+		info->philos[i].nb_philos = info->nb;
 		i++;
 	}
 	return (0);

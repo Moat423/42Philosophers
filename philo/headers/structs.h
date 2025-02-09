@@ -3,7 +3,7 @@
 
 # include <pthread.h>
 
-# define ODD_PHILO_SLEEP_TIME 100  // microseconds
+# define ODD_PHILO_SLEEP_TIME 200  // microseconds
 
 # define ERROR 2
 
@@ -65,6 +65,7 @@ typedef struct s_philo
 	unsigned int	tt_die;
 	unsigned int	tt_eat;
 	unsigned int	tt_sleep;
+	unsigned int	nb_philos;
 }					t_philo;
 
 typedef struct s_info
