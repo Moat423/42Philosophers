@@ -27,29 +27,10 @@ int	philo_eat(t_philo *philo)
 
 int	philo_take_forks(t_philo *philo)
 {
-	// int	odd;
-
-	// if (philo->id % 2)
-	// 	odd = 1;
-	// else
-	// 	odd = 0;
-	// if (philo->id % 2)
-	// 	usleep(ODD_PHILO_SLEEP_TIME);
 	if (philo_needs_stop(philo))
 		return (EXIT_FAILURE);
-	// if (odd)
 	pthread_mutex_lock(philo->right_fork);
-	// pthread_mutex_lock(philo->print_mutex);
-	// ft_printf_action(FORK, philo);
-	// pthread_mutex_unlock(philo->print_mutex);
-	// if (philo_needs_stop(philo))
-	// {
-	// 	pthread_mutex_unlock(philo->right_fork);
-	// 	return (EXIT_FAILURE);
-	// }
 	pthread_mutex_lock(philo->left_fork);
-	// if (!odd)
-	// 	pthread_mutex_lock(philo->right_fork);
 	if (philo_needs_stop(philo))
 	{
 		pthread_mutex_unlock(philo->right_fork);
